@@ -1,8 +1,9 @@
+import os
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL: str
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://nani@localhost:5432/spendly")
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
