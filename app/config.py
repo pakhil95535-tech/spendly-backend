@@ -1,23 +1,15 @@
-import os
-from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://nani@localhost:5432/spendly")
+    DATABASE_URL: str
     SECRET_KEY: str
-    ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
-    ANTHROPIC_API_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
+    GEMINI_API_KEY: str = ""
 
-    @field_validator("DATABASE_URL", mode="before")
-    @classmethod
-    def fix_database_url(cls, v: str) -> str:
-        if v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql+asyncpg://", 1)
-        if v.startswith("postgresql://") and "+asyncpg" not in v:
-            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
-        return v
-
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        # On Render, env vars come from the dashboard, not .env — this is fine
 
 settings = Settings()
