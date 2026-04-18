@@ -8,4 +8,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 anthropic
 python-multipart
-bcrypt
+bcrypt==4.0.1
